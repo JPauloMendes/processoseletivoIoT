@@ -29,7 +29,7 @@ time.sleep(0.5)
 temperatura_referencia = ler_temperatura()
 
 LIMITE_TEMPO_X = 5000
-LIMITE_VARIACAO_Y = 4.0
+LIMITE_VARIACAO_Y = 3.0
 
 alarme_porta_ativo = False
 alarme_temp_ativo = False
