@@ -2,8 +2,6 @@ from machine import Pin, I2C
 import time
 import struct
 
-time.sleep(1.5)
-
 print("Sistema de Monitoramento Inicializado")
 
 # Configuração Padrão do I2C
@@ -74,4 +72,5 @@ while True:
             alarme_porta_ativo = False
             alarme_temp_ativo = False
             
-    time.sleep_ms(10)
+    time.sleep_ms(150)
+    temperatura_referencia = ler_temperatura()
