@@ -70,3 +70,5 @@ while True:
             alarme_porta_ativo = False
             alarme_temp_ativo = False
             porta_estava_aberta = False
+            time.sleep(0.6)
+            break
