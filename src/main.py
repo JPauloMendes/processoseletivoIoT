@@ -74,4 +74,4 @@ while True:
             alarme_porta_ativo = False
             alarme_temp_ativo = False
             
-    time.sleep_ms(50)
+    time.sleep_ms(10)
