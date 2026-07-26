@@ -274,8 +274,8 @@ Preencha todas as seções abaixo de forma **clara, objetiva e técnica**.
 
 ### Identificação do Candidato
 
-- **Nome completo:**
-- **GitHub:**
+- **Nome completo:** João Paulo Mendes de Souza
+- **GitHub:** https://github.com/JPauloMendes
 
 ---
 
@@ -283,9 +283,9 @@ Preencha todas as seções abaixo de forma **clara, objetiva e técnica**.
 
 Descreva, em poucas palavras:
 
-- Qual é o objetivo do seu projeto
-- O que o sistema embarcado simulado faz
-- Como o usuário interage com ele (se aplicável)
+- Qual é o objetivo do seu projeto: O objetivo é simular um sistema de monitoramento ambiental e de acesso para ambientes controlados. O sistema dispara alertas caso uma porta fique aberta por muito tempo ou se houver uma variação brusca na temperatura do local.
+- O que o sistema embarcado simulado faz: Ele lê continuamente os dados térmicos do sensor MPU6050 e o estado físico de um botão. Se a porta ficar aberta por mais de 5 segundos, ou se a temperatura variar 3°C em relação à temperatura de referência inicial, alarmes são ativados. O sistema também é capaz de se "normalizar" sozinho quando as condições voltam ao ideal.
+- Como o usuário interage com ele (se aplicável): O usuário pressiona o botão no Wokwi para simular o fechamento da porta (estado 1) ou solta para simular a abertura (estado 0). A temperatura é alterada manipulando o próprio sensor no simulador.
 
 ---
 
@@ -293,9 +293,9 @@ Descreva, em poucas palavras:
 
 Explique a arquitetura lógica do seu projeto, abordando:
 
-- Fluxo principal do programa (`main.py`)
-- Estrutura de estados, loops ou temporizações
-- Como os componentes interagem entre si
+- Fluxo principal do programa (`main.py`): O script começa capturando uma temperatura base (temperatura_referencia) e depois entra em um loop infinito. Dentro do loop, ele realiza três blocos principais de checagem: o estado da porta, a variação térmica (delta_t) e a verificação de normalização.
+- Estrutura de estados, loops ou temporizações: Para a porta, uso a função time.ticks_diff() para contar o tempo de abertura de forma não-bloqueante, disparando o alerta ao atingir o limite de 5000ms. Quando o sistema detecta que os alarmes podem ser desligados, ele usa um pequeno time.sleep(0.6) apenas para garantir a estabilidade antes de resetar o status.
+- Como os componentes interagem entre si: O microcontrolador (ESP32) lê a tensão do botão (GPIO 4) e solicita diretamente os registradores de memória do MPU6050 (via I2C) para calcular a temperatura em graus Celsius através de decodificação de bytes.
 
 Se desejar, utilize tópicos ou um pequeno diagrama em texto.
 
@@ -305,9 +305,9 @@ Se desejar, utilize tópicos ou um pequeno diagrama em texto.
 
 Liste os principais componentes definidos no `diagram.json`, por exemplo:
 
-- Tipo de placa utilizada
-- LEDs, botões, sensores, atuadores, etc.
-- Função de cada componente no sistema
+- Tipo de placa utilizada: ESP32 (Microcontrolador principal que executa a lógica em MicroPython).
+- Sensor (MPU6050): Alimentado pelo 3V3 do ESP32 e conectado aos pinos 21 (SDA) e 22 (SCL). Utilizado exclusivamente para capturar a temperatura do ambiente.
+- Botão (Pushbutton verde): Conectado no pino 3V3 de um lado e no GPIO 4 do outro. Foi configurado no código com um resistor interno (Pin.PULL_DOWN), o que significa que ele lê 0 (aberto) quando solto e 1 (fechado) quando pressionado.
 
 ---
 
@@ -315,9 +315,9 @@ Liste os principais componentes definidos no `diagram.json`, por exemplo:
 
 Explique brevemente decisões importantes tomadas durante o desenvolvimento, como:
 
-- Organização do código
-- Uso de funções, estados ou constantes
-- Estratégias para temporização ou controle lógico
+- Leitura direta da memória: Em vez de usar bibliotecas pesadas de terceiros para o MPU6050, optei por ler os bytes brutos da memória I2C (i2c.readfrom_mem) e decodificá-los com a biblioteca struct. Isso deixa o firmware mais leve e direto.
+- Tolerância a falhas: Implementei blocos try/except na leitura do sensor. Caso ocorra alguma falha de comunicação no barramento I2C durante o loop, o código assume a temperatura de referência para não quebrar a execução ou gerar falsos positivos.
+- Constantes de calibração: Os limites de ativação foram abstraídos em constantes (LIMITE_TEMPO_X = 5000 e LIMITE_VARIACAO_Y = 3.0), o que facilita muito a manutenção ou a mudança da "regra de negócio" do monitoramento no futuro.
 
 ---
 
@@ -325,9 +325,9 @@ Explique brevemente decisões importantes tomadas durante o desenvolvimento, com
 
 Descreva o comportamento final do sistema:
 
-- O que funciona corretamente
-- Quais requisitos foram atendidos
-- Resultado observado na simulação do Wokwi
+- O que funciona corretamente: A detecção de tempo de porta aberta e o cálculo de variação térmica em tempo real funcionam perfeitamente. O sistema entra em estado de alerta e consegue resetar (Status: Sistema Normalizado) sozinho quando a porta fecha e a temperatura estabiliza.
+- Quais requisitos foram atendidos: O monitoramento contínuo, a lógica de temporização não-bloqueante para a porta e a integração do I2C foram 100% cumpridos.
+- Resultado observado na simulação do Wokwi: O circuito no Wokwi reflete perfeitamente as regras propostas, exibindo os alertas corretos no terminal Serial quando as variáveis ultrapassam as constantes estabelecidas.
 
 ---
 
@@ -335,10 +335,9 @@ Descreva o comportamento final do sistema:
 
 Utilize este espaço para comentar, se desejar:
 
-- Dificuldades encontradas
-- Limitações da solução
-- Melhorias que você faria com mais tempo
-- Principais aprendizados durante o desafio
+- Dificuldades encontradas: Manipular dados brutos (bytes) via I2C e convertê-los matematicamente para graus Celsius usando a equação técnica do datasheet do MPU6050 exigiu um pouco mais de atenção aos detalhes do que usar uma biblioteca pronta.
+- Melhorias que você faria com mais tempo: Implementaria um display ou um LED RGB físico no circuito para dar feedback visual instantâneo dos alarmes, sem depender exclusivamente da saída de texto no terminal.
+- Principais aprendizados durante o desafio: Foi uma ótima oportunidade para lidar com leitura de baixo nível (registradores de memória do hardware) e criar uma lógica robusta de tolerância a falhas (try/except) em sistemas embarcados.
 
 ---
 
