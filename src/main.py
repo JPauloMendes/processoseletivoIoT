@@ -63,16 +63,15 @@ while True:
         print("ALERTA: Degradacao termica detectada!")
         alarme_temp_ativo = True
 
-    # 3. Checagem de Normalização
+        # 3. Checagem de Normalização
     if alarme_porta_ativo or alarme_temp_ativo:
         porta_ok = (estado_porta == 1)
         temp_ok = (abs(temp_atual - temperatura_referencia) < LIMITE_VARIACAO_Y)
 
         if porta_ok and temp_ok:
+            time.sleep(0.6) 
+            
             print("Status: Sistema Normalizado.")
             alarme_porta_ativo = False
             alarme_temp_ativo = False
             porta_estava_aberta = False
-            
-            while True:
-                time.sleep(1)
