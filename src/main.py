@@ -73,4 +73,3 @@ while True:
             alarme_temp_ativo = False
             
     time.sleep_ms(150)
-    temperatura_referencia = ler_temperatura()
