@@ -22,6 +22,8 @@ try:
 except:
     pass
 
+# Captura inicial fixa da referência térmica
+time.sleep(0.5)
 temperatura_referencia = ler_temperatura()
 
 LIMITE_TEMPO_X = 5000
@@ -34,18 +36,18 @@ tempo_abertura_inicio = 0
 
 while True:
     estado_porta = btn1.value()
-    
+
     try:
         temp_atual = ler_temperatura()
     except:
         temp_atual = temperatura_referencia
-        
+
     # 1. Checagem da Porta (1 = Fechada, 0 = Aberta de acordo com o teste)
     if estado_porta == 0:
         if not porta_estava_aberta:
             tempo_abertura_inicio = time.ticks_ms()
             porta_estava_aberta = True
-        
+
         if not alarme_porta_ativo:
             tempo_decorrido = time.ticks_diff(time.ticks_ms(), tempo_abertura_inicio)
             if tempo_decorrido >= LIMITE_TEMPO_X:
@@ -53,6 +55,7 @@ while True:
                 alarme_porta_ativo = True
     else:
         porta_estava_aberta = False
+        tempo_abertura_inicio = time.ticks_ms()
 
     # 2. Checagem da Temperatura
     delta_t = abs(temp_atual - temperatura_referencia)
@@ -64,11 +67,15 @@ while True:
     if alarme_porta_ativo or alarme_temp_ativo:
         porta_ok = (estado_porta == 1)
         temp_ok = (abs(temp_atual - temperatura_referencia) < LIMITE_VARIACAO_Y)
-        
+
         if porta_ok and temp_ok:
             print("Status: Sistema Normalizado.")
             alarme_porta_ativo = False
             alarme_temp_ativo = False
             porta_estava_aberta = False
+            
+            # Pequeno respiro para garantir o envio da string e saída limpa do teste
             time.sleep(0.6)
             break
+
+    time.sleep_ms(50)
