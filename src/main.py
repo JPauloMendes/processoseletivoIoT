@@ -22,8 +22,6 @@ try:
 except:
     pass
 
-# Captura inicial após a estabilização térmica
-time.sleep(0.5) 
 temperatura_referencia = ler_temperatura()
 
 LIMITE_TEMPO_X = 5000
