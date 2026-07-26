@@ -1,7 +1,6 @@
 from machine import Pin, I2C
 import time
 import struct
-import sys
 
 print("Sistema de Monitoramento Inicializado")
 
@@ -72,5 +71,3 @@ while True:
             print("Status: Sistema Normalizado.")
             alarme_porta_ativo = False
             alarme_temp_ativo = False
-            
-    sys.exit(0)
