@@ -74,8 +74,5 @@ while True:
             alarme_temp_ativo = False
             porta_estava_aberta = False
             
-            # Pequeno respiro para garantir o envio da string e saída limpa do teste
-            time.sleep(0.6)
-            break
-
-    time.sleep_ms(50)
+            while True:
+                time.sleep(1)
